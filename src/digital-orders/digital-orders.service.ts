@@ -1,0 +1,198 @@
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateDigitalOrderDto } from './dto/digital-orders.dto';
+
+@Injectable()
+export class DigitalOrdersService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(userId: number, dto: CreateDigitalOrderDto) {
+    const product = await this.prisma.digitalProduct.findUnique({
+      where: { id: BigInt(dto.digitalProductId) },
+    });
+    if (!product) throw new NotFoundException('Digital product not found');
+    if (product.stock < 1) throw new BadRequestException('Product out of stock');
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: BigInt(userId) },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (Number(user.walletBalance) < dto.amountMmk) {
+      throw new BadRequestException('Insufficient wallet balance');
+    }
+
+    const orderId = uuidv4();
+
+    const [order] = await this.prisma.$transaction([
+      this.prisma.digitalOrder.create({
+        data: {
+          id: orderId,
+          userId: BigInt(userId),
+          digitalProductId: product.id,
+          productName: dto.productName,
+          amountMmk: dto.amountMmk,
+          status: 'Pending',
+          deliveryContent: product.description || 'Digital product delivery',
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: BigInt(userId) },
+        data: { walletBalance: { decrement: dto.amountMmk } },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          id: uuidv4(),
+          userId: BigInt(userId),
+          amount: -dto.amountMmk,
+          type: 'ORDER_SPEND',
+          paymentMethod: 'Wallet',
+          phone: '',
+          status: 'Success',
+        },
+      }),
+      this.prisma.digitalProduct.update({
+        where: { id: product.id },
+        data: { stock: { decrement: 1 } },
+      }),
+    ]);
+
+    return order;
+  }
+
+  async createByProductId(userId: number, productId: string) {
+    const product = await this.prisma.digitalProduct.findUnique({
+      where: { id: BigInt(productId) },
+    });
+    if (!product) throw new NotFoundException('Digital product not found');
+    if (product.stock < 1) throw new BadRequestException('Product out of stock');
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: BigInt(userId) },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    const amount = Number(product.priceMmk);
+
+    if (Number(user.walletBalance) < amount) {
+      throw new BadRequestException('Insufficient wallet balance');
+    }
+
+    const orderId = uuidv4();
+
+    const [order] = await this.prisma.$transaction([
+      this.prisma.digitalOrder.create({
+        data: {
+          id: orderId,
+          userId: BigInt(userId),
+          digitalProductId: product.id,
+          productName: product.name,
+          amountMmk: amount,
+          status: 'Pending',
+          deliveryContent: product.description || 'Digital product delivery',
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: BigInt(userId) },
+        data: { walletBalance: { decrement: amount } },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          id: uuidv4(),
+          userId: BigInt(userId),
+          amount: -amount,
+          type: 'ORDER_SPEND',
+          paymentMethod: 'Wallet',
+          phone: '',
+          status: 'Success',
+        },
+      }),
+      this.prisma.digitalProduct.update({
+        where: { id: product.id },
+        data: { stock: { decrement: 1 } },
+      }),
+    ]);
+
+    return order;
+  }
+
+  async userOrders(userId: number) {
+    return this.prisma.digitalOrder.findMany({
+      where: { userId: BigInt(userId) },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async adminOrders() {
+    return this.prisma.digitalOrder.findMany({
+      include: {
+        user: { select: { id: true, username: true } },
+        digitalProduct: { select: { name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async deleteOrder(orderId: string) {
+    const order = await this.prisma.digitalOrder.findUnique({
+      where: { id: orderId },
+    });
+    if (!order) throw new NotFoundException('Digital order not found');
+
+    return this.prisma.digitalOrder.delete({
+      where: { id: orderId },
+    });
+  }
+
+  async approveOrder(orderId: string) {
+    const order = await this.prisma.digitalOrder.findUnique({
+      where: { id: orderId },
+    });
+    if (!order) throw new NotFoundException('Digital order not found');
+    if (order.status !== 'Pending') {
+      throw new BadRequestException('Order is not in pending status');
+    }
+
+    return this.prisma.digitalOrder.update({
+      where: { id: orderId },
+      data: { status: 'Success' },
+    });
+  }
+
+  async rejectOrder(orderId: string) {
+    const order = await this.prisma.digitalOrder.findUnique({
+      where: { id: orderId },
+    });
+    if (!order) throw new NotFoundException('Digital order not found');
+    if (order.status !== 'Pending') {
+      throw new BadRequestException('Order is not in pending status');
+    }
+
+    const refundAmount = Number(order.amountMmk);
+
+    const [updatedOrder] = await this.prisma.$transaction([
+      this.prisma.digitalOrder.update({
+        where: { id: orderId },
+        data: { status: 'Cancelled' },
+      }),
+      this.prisma.user.update({
+        where: { id: order.userId },
+        data: { walletBalance: { increment: refundAmount } },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          id: uuidv4(),
+          userId: order.userId,
+          amount: refundAmount,
+          type: 'REFUND',
+          paymentMethod: 'Wallet',
+          phone: '',
+          status: 'Success',
+        },
+      }),
+    ]);
+
+    return updatedOrder;
+  }
+}
