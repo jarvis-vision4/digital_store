@@ -103,7 +103,7 @@ class CreateBannerDto {
     badge;
     isActive;
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, title: { required: true, type: () => String }, imageUrl: { required: true, type: () => String }, description: { required: false, type: () => String }, badge: { required: false, type: () => String }, isActive: { required: false, type: () => Boolean } };
+        return { id: { required: true, type: () => String }, title: { required: true, type: () => String }, imageUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, badge: { required: false, type: () => String }, isActive: { required: false, type: () => Boolean } };
     }
 }
 exports.CreateBannerDto = CreateBannerDto;
@@ -117,6 +117,7 @@ __decorate([
 ], CreateBannerDto.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateBannerDto.prototype, "imageUrl", void 0);
 __decorate([

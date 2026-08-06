@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SettingsService } from './settings.service';
 import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -7,6 +8,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums';
 import { Public } from '../common/decorators/public.decorator';
+import { bannerStorage, imageFilter, toPublicPath } from '../common/multer.config';
 
 @ApiTags('Settings')
 @Controller('v1')
@@ -98,19 +100,66 @@ export class SettingsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MODERATOR)
   @Post('admin/banners')
+  @UseInterceptors(FileInterceptor('image', { storage: bannerStorage, fileFilter: imageFilter }))
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create a promotional banner (admin)' })
-  storeBanner(@Body() dto: CreateBannerDto) {
-    return this.settingsService.storeBanner(dto);
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Create a promotional banner (admin) - upload an image file' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        title: { type: 'string' },
+        image: { type: 'string', format: 'binary' },
+        description: { type: 'string' },
+        badge: { type: 'string' },
+        isActive: { type: 'boolean' },
+      },
+    },
+  })
+  storeBanner(
+    @Body() dto: CreateBannerDto,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    const imagePath = toPublicPath(image?.path);
+    return this.settingsService.storeBanner(dto, imagePath);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MODERATOR)
   @Put('admin/banners/:id')
+  @UseInterceptors(FileInterceptor('image', { storage: bannerStorage, fileFilter: imageFilter }))
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update a banner (admin)' })
-  updateBanner(@Param('id') id: string, @Body() dto: UpdateBannerDto) {
-    return this.settingsService.updateBanner(id, dto);
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Update a banner (admin) - optional image file' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        image: { type: 'string', format: 'binary' },
+        description: { type: 'string' },
+        badge: { type: 'string' },
+        isActive: { type: 'boolean' },
+      },
+    },
+  })
+  updateBanner(
+    @Param('id') id: string,
+    @Body() dto: UpdateBannerDto,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    const imagePath = toPublicPath(image?.path);
+    return this.settingsService.updateBanner(id, dto, imagePath);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
+  @Delete('admin/banners/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a banner (admin)' })
+  deleteBanner(@Param('id') id: string) {
+    return this.settingsService.deleteBanner(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

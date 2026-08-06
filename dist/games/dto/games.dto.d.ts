@@ -9,7 +9,7 @@ export declare class CreateGameDto {
     id: string;
     name: string;
     category: GameCategory;
-    image: string;
+    image?: string;
     posterUrl?: string;
     description?: string;
     minAmount?: string;
@@ -45,6 +45,7 @@ export declare class CreateDigitalProductDto {
     name: string;
     category?: string;
     description?: string;
+    image?: string;
     priceMmk: number;
-    stock?: number;
+    isAvailable?: boolean;
 }

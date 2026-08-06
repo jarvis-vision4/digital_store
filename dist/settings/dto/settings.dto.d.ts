@@ -19,7 +19,7 @@ export declare class UpdateTelegramBotDto {
 export declare class CreateBannerDto {
     id: string;
     title: string;
-    imageUrl: string;
+    imageUrl?: string;
     description?: string;
     badge?: string;
     isActive?: boolean;

@@ -4,11 +4,11 @@ import { GameCategory } from '@prisma/client';
 
 export class PackageItem {
   @IsString()
-  packageName: string;
+  packageName!: string;
 
   @IsNumber()
   @Min(0)
-  priceMmk: number;
+  priceMmk!: number;
 
   @IsNumber()
   @IsOptional()
@@ -21,16 +21,17 @@ export class PackageItem {
 
 export class CreateGameDto {
   @IsString()
-  id: string;
+  id!: string;
 
   @IsString()
-  name: string;
+  name!: string;
 
   @IsEnum(GameCategory)
-  category: GameCategory;
+  category!: GameCategory;
 
   @IsString()
-  image: string;
+  @IsOptional()
+  image?: string;
 
   @IsString()
   @IsOptional()
@@ -56,7 +57,7 @@ export class CreateGameDto {
   @ValidateNested({ each: true })
   @Type(() => PackageItem)
   @ArrayMinSize(1)
-  packages: PackageItem[];
+  packages!: PackageItem[];
 }
 
 export class UpdateGameDto {
@@ -99,11 +100,11 @@ export class UpdateGameDto {
 
 export class CreatePackageDto {
   @IsString()
-  packageName: string;
+  packageName!: string;
 
   @IsNumber()
   @Min(0)
-  priceMmk: number;
+  priceMmk!: number;
 
   @IsNumber()
   @IsOptional()
@@ -139,7 +140,7 @@ export class UpdatePackageDto {
 
 export class CreateDigitalProductDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsString()
   @IsOptional()
@@ -149,13 +150,17 @@ export class CreateDigitalProductDto {
   @IsOptional()
   description?: string;
 
-  @IsNumber()
-  @Min(0)
-  priceMmk: number;
+  @IsString()
+  @IsOptional()
+  image?: string;
 
   @IsNumber()
+  @Min(0)
+  priceMmk!: number;
+
+  @IsBoolean()
   @IsOptional()
-  stock?: number;
+  isAvailable?: boolean;
 }
 
 

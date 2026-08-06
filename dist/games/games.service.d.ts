@@ -55,7 +55,7 @@ export declare class GamesService {
         popular: boolean;
         sortOrder: number;
     }>;
-    create(dto: CreateGameDto): Promise<{
+    create(dto: CreateGameDto, imagePath?: string): Promise<{
         packages: {
             id: bigint;
             isActive: boolean;
@@ -81,7 +81,7 @@ export declare class GamesService {
         popular: boolean;
         sortOrder: number;
     }>;
-    update(id: string, dto: UpdateGameDto): Promise<{
+    update(id: string, dto: UpdateGameDto, imagePath?: string): Promise<{
         id: string;
         isActive: boolean;
         createdAt: Date;
@@ -131,37 +131,9 @@ export declare class GamesService {
         originalPrice: import("@prisma/client/runtime/library").Decimal | null;
         gameId: string;
     }>;
-    getDigitalProducts(): Promise<{
-        id: bigint;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string;
-        description: string | null;
-        priceMmk: import("@prisma/client/runtime/library").Decimal;
-        category: string;
-        stock: number;
-    }[]>;
-    storeDigitalProduct(dto: CreateDigitalProductDto): Promise<{
-        id: bigint;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string;
-        description: string | null;
-        priceMmk: import("@prisma/client/runtime/library").Decimal;
-        category: string;
-        stock: number;
-    }>;
-    getDigitalProductsAdmin(): Promise<{
-        id: bigint;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string;
-        description: string | null;
-        priceMmk: import("@prisma/client/runtime/library").Decimal;
-        category: string;
-        stock: number;
-    }[]>;
+    getDigitalProducts(): Promise<any[]>;
+    storeDigitalProduct(dto: CreateDigitalProductDto, imagePath?: string): Promise<any>;
+    updateDigitalProduct(id: string, dto: CreateDigitalProductDto, imagePath?: string): Promise<any>;
+    getDigitalProductsAdmin(): Promise<any[]>;
+    private withStockFlags;
 }

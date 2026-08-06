@@ -88,19 +88,35 @@ export class SettingsService {
     });
   }
 
-  async storeBanner(dto: CreateBannerDto) {
-    return this.prisma.promotionalBanner.create({ data: dto });
+  async storeBanner(dto: CreateBannerDto, imagePath?: string) {
+    return this.prisma.promotionalBanner.create({
+      data: {
+        ...dto,
+        imageUrl: imagePath ?? dto.imageUrl ?? '',
+      },
+    });
   }
 
-  async updateBanner(id: string, dto: UpdateBannerDto) {
+  async updateBanner(id: string, dto: UpdateBannerDto, imagePath?: string) {
     const banner = await this.prisma.promotionalBanner.findUnique({
       where: { id },
     });
     if (!banner) throw new NotFoundException('Banner not found');
     return this.prisma.promotionalBanner.update({
       where: { id },
-      data: dto,
+      data: {
+        ...dto,
+        ...(imagePath ? { imageUrl: imagePath } : {}),
+      },
     });
+  }
+
+  async deleteBanner(id: string) {
+    const banner = await this.prisma.promotionalBanner.findUnique({
+      where: { id },
+    });
+    if (!banner) throw new NotFoundException('Banner not found');
+    return this.prisma.promotionalBanner.delete({ where: { id } });
   }
 
   async getAdminStats() {

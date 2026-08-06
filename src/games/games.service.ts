@@ -33,25 +33,30 @@ export class GamesService {
     return game;
   }
 
-  async create(dto: CreateGameDto) {
+  async create(dto: CreateGameDto, imagePath?: string) {
     const { packages, ...gameData } = dto;
     return this.prisma.game.create({
       data: {
         ...gameData,
-        packages: {
-          createMany: {
-            data: packages,
-          },
-        },
+        image: imagePath ?? gameData.image ?? '',
+        ...(Array.isArray(packages) && packages.length
+          ? { packages: { createMany: { data: packages } } }
+          : {}),
       },
       include: { packages: true },
     });
   }
 
-  async update(id: string, dto: UpdateGameDto) {
+  async update(id: string, dto: UpdateGameDto, imagePath?: string) {
     const game = await this.prisma.game.findUnique({ where: { id } });
     if (!game) throw new NotFoundException('Game not found');
-    return this.prisma.game.update({ where: { id }, data: dto });
+    return this.prisma.game.update({
+      where: { id },
+      data: {
+        ...dto,
+        ...(imagePath ? { image: imagePath } : {}),
+      },
+    });
   }
 
   async remove(id: string) {
@@ -87,18 +92,50 @@ export class GamesService {
 
   // Digital Products
   async getDigitalProducts() {
-    return this.prisma.digitalProduct.findMany({
+    const products = await this.prisma.digitalProduct.findMany({
       where: { isActive: true },
     });
+    return products.map((p) => this.withStockFlags(p));
   }
 
-  async storeDigitalProduct(dto: CreateDigitalProductDto) {
-    return this.prisma.digitalProduct.create({ data: dto });
+  async storeDigitalProduct(dto: CreateDigitalProductDto, imagePath?: string) {
+    const product = await this.prisma.digitalProduct.create({
+      data: {
+        ...dto,
+        ...(imagePath ? { image: imagePath } : {}),
+      },
+    });
+    return this.withStockFlags(product);
+  }
+
+  async updateDigitalProduct(id: string, dto: CreateDigitalProductDto, imagePath?: string) {
+    const product = await this.prisma.digitalProduct.findUnique({
+      where: { id: BigInt(id) },
+    });
+    if (!product) throw new NotFoundException('Digital product not found');
+    const updated = await this.prisma.digitalProduct.update({
+      where: { id: BigInt(id) },
+      data: {
+        ...dto,
+        ...(imagePath ? { image: imagePath } : {}),
+      },
+    });
+    return this.withStockFlags(updated);
   }
 
   async getDigitalProductsAdmin() {
-    return this.prisma.digitalProduct.findMany({
+    const products = await this.prisma.digitalProduct.findMany({
       orderBy: { createdAt: 'desc' },
     });
+    return products.map((p) => this.withStockFlags(p));
+  }
+
+  private withStockFlags(product: any) {
+    const available = product.isAvailable;
+    return {
+      ...product,
+      stockAvailable: available,
+      inStock: available,
+    };
   }
 }

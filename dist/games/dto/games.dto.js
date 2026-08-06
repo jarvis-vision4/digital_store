@@ -55,7 +55,7 @@ class CreateGameDto {
     sortOrder;
     packages;
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, category: { required: true, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: true, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, minAmount: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number }, packages: { required: true, type: () => [require("./games.dto").PackageItem], minItems: 1 } };
+        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, category: { required: true, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: false, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, minAmount: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number }, packages: { required: true, type: () => [require("./games.dto").PackageItem], minItems: 1 } };
     }
 }
 exports.CreateGameDto = CreateGameDto;
@@ -73,6 +73,7 @@ __decorate([
 ], CreateGameDto.prototype, "category", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateGameDto.prototype, "image", void 0);
 __decorate([
@@ -237,10 +238,11 @@ class CreateDigitalProductDto {
     name;
     category;
     description;
+    image;
     priceMmk;
-    stock;
+    isAvailable;
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, category: { required: false, type: () => String }, description: { required: false, type: () => String }, priceMmk: { required: true, type: () => Number, minimum: 0 }, stock: { required: false, type: () => Number } };
+        return { name: { required: true, type: () => String }, category: { required: false, type: () => String }, description: { required: false, type: () => String }, image: { required: false, type: () => String }, priceMmk: { required: true, type: () => Number, minimum: 0 }, isAvailable: { required: false, type: () => Boolean } };
     }
 }
 exports.CreateDigitalProductDto = CreateDigitalProductDto;
@@ -259,13 +261,18 @@ __decorate([
     __metadata("design:type", String)
 ], CreateDigitalProductDto.prototype, "description", void 0);
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateDigitalProductDto.prototype, "image", void 0);
+__decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
 ], CreateDigitalProductDto.prototype, "priceMmk", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsBoolean)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Number)
-], CreateDigitalProductDto.prototype, "stock", void 0);
+    __metadata("design:type", Boolean)
+], CreateDigitalProductDto.prototype, "isAvailable", void 0);
 //# sourceMappingURL=games.dto.js.map

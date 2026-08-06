@@ -41,7 +41,7 @@ export declare class SettingsController {
         imageUrl: string;
         badge: string | null;
     }[]>;
-    storeBanner(dto: CreateBannerDto): Promise<{
+    storeBanner(dto: CreateBannerDto, image?: Express.Multer.File): Promise<{
         id: string;
         isActive: boolean;
         createdAt: Date;
@@ -51,7 +51,17 @@ export declare class SettingsController {
         imageUrl: string;
         badge: string | null;
     }>;
-    updateBanner(id: string, dto: UpdateBannerDto): Promise<{
+    updateBanner(id: string, dto: UpdateBannerDto, image?: Express.Multer.File): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        title: string;
+        imageUrl: string;
+        badge: string | null;
+    }>;
+    deleteBanner(id: string): Promise<{
         id: string;
         isActive: boolean;
         createdAt: Date;

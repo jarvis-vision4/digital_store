@@ -87,10 +87,15 @@ let SettingsService = class SettingsService {
             orderBy: { createdAt: 'desc' },
         });
     }
-    async storeBanner(dto) {
-        return this.prisma.promotionalBanner.create({ data: dto });
+    async storeBanner(dto, imagePath) {
+        return this.prisma.promotionalBanner.create({
+            data: {
+                ...dto,
+                imageUrl: imagePath ?? dto.imageUrl ?? '',
+            },
+        });
     }
-    async updateBanner(id, dto) {
+    async updateBanner(id, dto, imagePath) {
         const banner = await this.prisma.promotionalBanner.findUnique({
             where: { id },
         });
@@ -98,8 +103,19 @@ let SettingsService = class SettingsService {
             throw new common_1.NotFoundException('Banner not found');
         return this.prisma.promotionalBanner.update({
             where: { id },
-            data: dto,
+            data: {
+                ...dto,
+                ...(imagePath ? { imageUrl: imagePath } : {}),
+            },
         });
+    }
+    async deleteBanner(id) {
+        const banner = await this.prisma.promotionalBanner.findUnique({
+            where: { id },
+        });
+        if (!banner)
+            throw new common_1.NotFoundException('Banner not found');
+        return this.prisma.promotionalBanner.delete({ where: { id } });
     }
     async getAdminStats() {
         const [totalUsers, totalOrders, totalRevenue, pendingOrders, pendingTopups] = await Promise.all([

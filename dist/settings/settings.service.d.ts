@@ -43,7 +43,7 @@ export declare class SettingsService {
         imageUrl: string;
         badge: string | null;
     }[]>;
-    storeBanner(dto: CreateBannerDto): Promise<{
+    storeBanner(dto: CreateBannerDto, imagePath?: string): Promise<{
         id: string;
         isActive: boolean;
         createdAt: Date;
@@ -53,7 +53,17 @@ export declare class SettingsService {
         imageUrl: string;
         badge: string | null;
     }>;
-    updateBanner(id: string, dto: UpdateBannerDto): Promise<{
+    updateBanner(id: string, dto: UpdateBannerDto, imagePath?: string): Promise<{
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        title: string;
+        imageUrl: string;
+        badge: string | null;
+    }>;
+    deleteBanner(id: string): Promise<{
         id: string;
         isActive: boolean;
         createdAt: Date;

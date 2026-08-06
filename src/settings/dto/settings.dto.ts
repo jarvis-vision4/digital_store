@@ -55,7 +55,8 @@ export class CreateBannerDto {
   title: string;
 
   @IsString()
-  imageUrl: string;
+  @IsOptional()
+  imageUrl?: string;
 
   @IsString()
   @IsOptional()

@@ -24,8 +24,6 @@ let DigitalOrdersService = class DigitalOrdersService {
         });
         if (!product)
             throw new common_1.NotFoundException('Digital product not found');
-        if (product.stock < 1)
-            throw new common_1.BadRequestException('Product out of stock');
         const user = await this.prisma.user.findUnique({
             where: { id: BigInt(userId) },
         });
@@ -62,10 +60,6 @@ let DigitalOrdersService = class DigitalOrdersService {
                     status: 'Success',
                 },
             }),
-            this.prisma.digitalProduct.update({
-                where: { id: product.id },
-                data: { stock: { decrement: 1 } },
-            }),
         ]);
         return order;
     }
@@ -75,8 +69,6 @@ let DigitalOrdersService = class DigitalOrdersService {
         });
         if (!product)
             throw new common_1.NotFoundException('Digital product not found');
-        if (product.stock < 1)
-            throw new common_1.BadRequestException('Product out of stock');
         const user = await this.prisma.user.findUnique({
             where: { id: BigInt(userId) },
         });
@@ -113,10 +105,6 @@ let DigitalOrdersService = class DigitalOrdersService {
                     phone: '',
                     status: 'Success',
                 },
-            }),
-            this.prisma.digitalProduct.update({
-                where: { id: product.id },
-                data: { stock: { decrement: 1 } },
             }),
         ]);
         return order;

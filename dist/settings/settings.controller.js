@@ -16,6 +16,7 @@ exports.SettingsController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const platform_express_1 = require("@nestjs/platform-express");
 const settings_service_1 = require("./settings.service");
 const settings_dto_1 = require("./dto/settings.dto");
 const jwt_auth_guard_1 = require("../common/guards/jwt-auth.guard");
@@ -23,6 +24,7 @@ const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const enums_1 = require("../common/enums");
 const public_decorator_1 = require("../common/decorators/public.decorator");
+const multer_config_1 = require("../common/multer.config");
 let SettingsController = class SettingsController {
     settingsService;
     constructor(settingsService) {
@@ -58,11 +60,16 @@ let SettingsController = class SettingsController {
     getBannersAdmin() {
         return this.settingsService.getBannersAdmin();
     }
-    storeBanner(dto) {
-        return this.settingsService.storeBanner(dto);
+    storeBanner(dto, image) {
+        const imagePath = (0, multer_config_1.toPublicPath)(image?.path);
+        return this.settingsService.storeBanner(dto, imagePath);
     }
-    updateBanner(id, dto) {
-        return this.settingsService.updateBanner(id, dto);
+    updateBanner(id, dto, image) {
+        const imagePath = (0, multer_config_1.toPublicPath)(image?.path);
+        return this.settingsService.updateBanner(id, dto, imagePath);
+    }
+    deleteBanner(id) {
+        return this.settingsService.deleteBanner(id);
     }
     getAdminStats() {
         return this.settingsService.getAdminStats();
@@ -182,27 +189,70 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
     (0, common_1.Post)('admin/banners'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', { storage: multer_config_1.bannerStorage, fileFilter: multer_config_1.imageFilter })),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create a promotional banner (admin)' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a promotional banner (admin) - upload an image file' }),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                id: { type: 'string' },
+                title: { type: 'string' },
+                image: { type: 'string', format: 'binary' },
+                description: { type: 'string' },
+                badge: { type: 'string' },
+                isActive: { type: 'boolean' },
+            },
+        },
+    }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [settings_dto_1.CreateBannerDto]),
+    __metadata("design:paramtypes", [settings_dto_1.CreateBannerDto, Object]),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "storeBanner", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
     (0, common_1.Put)('admin/banners/:id'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', { storage: multer_config_1.bannerStorage, fileFilter: multer_config_1.imageFilter })),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Update a banner (admin)' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a banner (admin) - optional image file' }),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                title: { type: 'string' },
+                image: { type: 'string', format: 'binary' },
+                description: { type: 'string' },
+                badge: { type: 'string' },
+                isActive: { type: 'boolean' },
+            },
+        },
+    }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, settings_dto_1.UpdateBannerDto]),
+    __metadata("design:paramtypes", [String, settings_dto_1.UpdateBannerDto, Object]),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "updateBanner", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
+    (0, common_1.Delete)('admin/banners/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete a banner (admin)' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], SettingsController.prototype, "deleteBanner", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
