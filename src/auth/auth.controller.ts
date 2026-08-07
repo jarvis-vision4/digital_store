@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, ChangePasswordDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, ChangePasswordDto, OAuthDto } from './dto/auth.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
@@ -23,6 +23,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Login and receive JWT token' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Public()
+  @Post('auth/oauth')
+  @ApiOperation({ summary: 'OAuth (Google) sign-in: create or link a user by email' })
+  oauthLogin(@Body() dto: OAuthDto) {
+    return this.authService.oauthLogin(dto);
   }
 
   @UseGuards(JwtAuthGuard)

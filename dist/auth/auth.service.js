@@ -132,6 +132,32 @@ let AuthService = class AuthService {
         }
         return this.generateToken(user);
     }
+    async oauthLogin(dto) {
+        const existing = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+        });
+        if (existing) {
+            return this.generateToken(existing);
+        }
+        let username = dto.username;
+        const taken = await this.prisma.user.findUnique({
+            where: { username },
+        });
+        if (taken) {
+            username = `${dto.username}_${(0, uuid_1.v4)().slice(0, 6)}`;
+        }
+        const passwordHash = await bcrypt.hash((0, uuid_1.v4)(), 10);
+        const referralCode = (0, uuid_1.v4)().slice(0, 8).toUpperCase();
+        const user = await this.prisma.user.create({
+            data: {
+                username,
+                email: dto.email,
+                passwordHash,
+                referralCode,
+            },
+        });
+        return this.generateToken(user);
+    }
     async getProfile(userId) {
         const user = await this.prisma.user.findUnique({
             where: { id: BigInt(userId) },

@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, ChangePasswordDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, ChangePasswordDto, OAuthDto } from './dto/auth.dto';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
@@ -12,6 +12,14 @@ export declare class AuthController {
         };
     }>;
     login(dto: LoginDto): Promise<{
+        accessToken: string;
+        user: {
+            id: number;
+            username: string;
+            role: string;
+        };
+    }>;
+    oauthLogin(dto: OAuthDto): Promise<{
         accessToken: string;
         user: {
             id: number;

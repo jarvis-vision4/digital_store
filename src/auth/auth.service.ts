@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto, LoginDto, ChangePasswordDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, ChangePasswordDto, OAuthDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -95,6 +95,50 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    return this.generateToken(user);
+  }
+
+  /**
+   * OAuth (Google) sign-in / upsert.
+   * - If a user with the given email exists, we simply log them in
+   *   (first Google sign-in for an existing email-password account links it).
+   * - Otherwise we create a new user in the `users` table:
+   *     username      -> from the OAuth profile (email prefix, made unique)
+   *     email         -> verified Google email
+   *     passwordHash  -> random bcrypt hash (OAuth users cannot log in by password)
+   *     referralCode  -> generated like a normal registration
+   * Returns the same { accessToken, user } shape as register/login so the
+   * frontend can drop it into the existing JWT / axios flow.
+   */
+  async oauthLogin(dto: OAuthDto) {
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      return this.generateToken(existing);
+    }
+
+    // Ensure a unique username if the email prefix is already taken.
+    let username = dto.username;
+    const taken = await this.prisma.user.findUnique({
+      where: { username },
+    });
+    if (taken) {
+      username = `${dto.username}_${uuidv4().slice(0, 6)}`;
+    }
+
+    const passwordHash = await bcrypt.hash(uuidv4(), 10);
+    const referralCode = uuidv4().slice(0, 8).toUpperCase();
+
+    const user = await this.prisma.user.create({
+      data: {
+        username,
+        email: dto.email,
+        passwordHash,
+        referralCode,
+      },
+    });
 
     return this.generateToken(user);
   }

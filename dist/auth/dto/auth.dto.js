@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChangePasswordDto = exports.LoginDto = exports.RegisterDto = void 0;
+exports.OAuthDto = exports.ChangePasswordDto = exports.LoginDto = exports.RegisterDto = void 0;
 const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class RegisterDto {
@@ -76,4 +76,34 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], ChangePasswordDto.prototype, "newPassword", void 0);
+class OAuthDto {
+    email;
+    username;
+    displayName;
+    avatarUrl;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { email: { required: true, type: () => String, format: "email" }, username: { required: true, type: () => String, minLength: 3, maxLength: 100 }, displayName: { required: false, type: () => String }, avatarUrl: { required: false, type: () => String } };
+    }
+}
+exports.OAuthDto = OAuthDto;
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], OAuthDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(3),
+    (0, class_validator_1.MaxLength)(100),
+    __metadata("design:type", String)
+], OAuthDto.prototype, "username", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], OAuthDto.prototype, "displayName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], OAuthDto.prototype, "avatarUrl", void 0);
 //# sourceMappingURL=auth.dto.js.map

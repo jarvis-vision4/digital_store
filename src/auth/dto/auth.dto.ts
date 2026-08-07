@@ -35,3 +35,21 @@ export class ChangePasswordDto {
   @MinLength(6)
   newPassword!: string;
 }
+
+export class OAuthDto {
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  @MinLength(3)
+  @MaxLength(100)
+  username!: string;
+
+  @IsString()
+  @IsOptional()
+  displayName?: string;
+
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
+}

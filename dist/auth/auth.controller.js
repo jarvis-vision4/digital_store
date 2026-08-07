@@ -32,6 +32,9 @@ let AuthController = class AuthController {
     login(dto) {
         return this.authService.login(dto);
     }
+    oauthLogin(dto) {
+        return this.authService.oauthLogin(dto);
+    }
     getProfile(userId) {
         return this.authService.getProfile(userId);
     }
@@ -63,6 +66,16 @@ __decorate([
     __metadata("design:paramtypes", [auth_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('auth/oauth'),
+    (0, swagger_1.ApiOperation)({ summary: 'OAuth (Google) sign-in: create or link a user by email' }),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.OAuthDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "oauthLogin", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('profile'),
