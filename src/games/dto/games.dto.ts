@@ -41,10 +41,6 @@ export class CreateGameDto {
   @IsOptional()
   description?: string;
 
-  @IsString()
-  @IsOptional()
-  minAmount?: string;
-
   @IsBoolean()
   @IsOptional()
   popular?: boolean;
@@ -80,10 +76,6 @@ export class UpdateGameDto {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @IsString()
-  @IsOptional()
-  minAmount?: string;
 
   @IsBoolean()
   @IsOptional()

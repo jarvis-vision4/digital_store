@@ -50,12 +50,11 @@ class CreateGameDto {
     image;
     posterUrl;
     description;
-    minAmount;
     popular;
     sortOrder;
     packages;
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, category: { required: true, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: false, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, minAmount: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number }, packages: { required: true, type: () => [require("./games.dto").PackageItem], minItems: 1 } };
+        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, category: { required: true, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: false, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number }, packages: { required: true, type: () => [require("./games.dto").PackageItem], minItems: 1 } };
     }
 }
 exports.CreateGameDto = CreateGameDto;
@@ -87,11 +86,6 @@ __decorate([
     __metadata("design:type", String)
 ], CreateGameDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateGameDto.prototype, "minAmount", void 0);
-__decorate([
     (0, class_validator_1.IsBoolean)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
@@ -114,12 +108,11 @@ class UpdateGameDto {
     image;
     posterUrl;
     description;
-    minAmount;
     popular;
     isActive;
     sortOrder;
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: false, type: () => String }, category: { required: false, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: false, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, minAmount: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, isActive: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number } };
+        return { name: { required: false, type: () => String }, category: { required: false, enum: ["mobile_games", "pc_games", "gift_card", "mobile_app", "redeem_code", "social_service"] }, image: { required: false, type: () => String }, posterUrl: { required: false, type: () => String }, description: { required: false, type: () => String }, popular: { required: false, type: () => Boolean }, isActive: { required: false, type: () => Boolean }, sortOrder: { required: false, type: () => Number } };
     }
 }
 exports.UpdateGameDto = UpdateGameDto;
@@ -148,11 +141,6 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateGameDto.prototype, "description", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], UpdateGameDto.prototype, "minAmount", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     (0, class_validator_1.IsOptional)(),

@@ -12,7 +12,6 @@ export declare class CreateGameDto {
     image?: string;
     posterUrl?: string;
     description?: string;
-    minAmount?: string;
     popular?: boolean;
     sortOrder?: number;
     packages: PackageItem[];
@@ -23,7 +22,6 @@ export declare class UpdateGameDto {
     image?: string;
     posterUrl?: string;
     description?: string;
-    minAmount?: string;
     popular?: boolean;
     isActive?: boolean;
     sortOrder?: number;

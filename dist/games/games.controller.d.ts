@@ -25,7 +25,6 @@ export declare class GamesController {
         category: import("@prisma/client").$Enums.GameCategory;
         image: string;
         posterUrl: string | null;
-        minAmount: string;
         popular: boolean;
         sortOrder: number;
     })[]>;
@@ -51,7 +50,6 @@ export declare class GamesController {
         category: import("@prisma/client").$Enums.GameCategory;
         image: string;
         posterUrl: string | null;
-        minAmount: string;
         popular: boolean;
         sortOrder: number;
     }>;
@@ -83,7 +81,6 @@ export declare class GamesController {
         category: import("@prisma/client").$Enums.GameCategory;
         image: string;
         posterUrl: string | null;
-        minAmount: string;
         popular: boolean;
         sortOrder: number;
     }>;
@@ -97,7 +94,6 @@ export declare class GamesController {
         category: import("@prisma/client").$Enums.GameCategory;
         image: string;
         posterUrl: string | null;
-        minAmount: string;
         popular: boolean;
         sortOrder: number;
     }>;
@@ -111,7 +107,6 @@ export declare class GamesController {
         category: import("@prisma/client").$Enums.GameCategory;
         image: string;
         posterUrl: string | null;
-        minAmount: string;
         popular: boolean;
         sortOrder: number;
     }>;

@@ -90,7 +90,6 @@ model Game {
   image       String        @db.VarChar(255)
   posterUrl   String?       @map("poster_url") @db.VarChar(255)
   description String?       @db.Text
-  minAmount   String        @default("500 MMK") @map("min_amount") @db.VarChar(100)
   popular     Boolean       @default(false)
   isActive    Boolean       @default(true) @map("is_active")
   sortOrder   Int           @default(1) @map("sort_order")
