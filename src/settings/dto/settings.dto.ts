@@ -37,6 +37,28 @@ export class UpdateNoticeDto {
   globalNotice: string;
 }
 
+export class UpdateSupportContactsDto {
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  viber?: string;
+
+  @IsString()
+  @IsOptional()
+  telegram?: string;
+
+  @IsString()
+  @IsOptional()
+  tiktok?: string;
+
+  @IsString()
+  @IsOptional()
+  facebook?: string;
+}
+
 export class UpdateTelegramBotDto {
   @IsString()
   @IsOptional()

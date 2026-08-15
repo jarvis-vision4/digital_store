@@ -51,6 +51,9 @@ let SettingsController = class SettingsController {
     updateSecuritySettings(dto) {
         return this.settingsService.updateSecuritySettings(dto);
     }
+    updateSupportContacts(dto) {
+        return this.settingsService.updateSupportContacts(dto);
+    }
     updateNotice(dto) {
         return this.settingsService.updateNotice(dto);
     }
@@ -150,6 +153,18 @@ __decorate([
     __metadata("design:paramtypes", [settings_dto_1.UpdateSecuritySettingsDto]),
     __metadata("design:returntype", void 0)
 ], SettingsController.prototype, "updateSecuritySettings", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
+    (0, common_1.Put)('admin/settings/support'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update support contact channels (admin)' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [settings_dto_1.UpdateSupportContactsDto]),
+    __metadata("design:returntype", void 0)
+], SettingsController.prototype, "updateSupportContacts", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UseIntercep
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SettingsService } from './settings.service';
-import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
+import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, UpdateSupportContactsDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -68,6 +68,15 @@ export class SettingsController {
   @ApiOperation({ summary: 'Update security settings (admin)' })
   updateSecuritySettings(@Body() dto: UpdateSecuritySettingsDto) {
     return this.settingsService.updateSecuritySettings(dto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
+  @Put('admin/settings/support')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update support contact channels (admin)' })
+  updateSupportContacts(@Body() dto: UpdateSupportContactsDto) {
+    return this.settingsService.updateSupportContacts(dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

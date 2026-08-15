@@ -73,6 +73,13 @@ let SettingsService = class SettingsService {
         await this.setSetting('global_notice', dto.globalNotice);
         return { message: 'Notice updated' };
     }
+    async updateSupportContacts(dto) {
+        const current = await this.getSetting('support_contacts');
+        const currentObj = current ? JSON.parse(current) : {};
+        const updated = { ...currentObj, ...dto };
+        await this.setSetting('support_contacts', JSON.stringify(updated));
+        return { message: 'Support contacts updated' };
+    }
     async updateTelegramBot(dto) {
         if (dto.botToken) {
             await this.setSetting('telegram_bot_token', dto.botToken);

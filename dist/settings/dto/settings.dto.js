@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateBannerDto = exports.CreateBannerDto = exports.UpdateTelegramBotDto = exports.UpdateNoticeDto = exports.UpdateSecuritySettingsDto = exports.UpdatePaymentSettingsDto = void 0;
+exports.UpdateBannerDto = exports.CreateBannerDto = exports.UpdateTelegramBotDto = exports.UpdateSupportContactsDto = exports.UpdateNoticeDto = exports.UpdateSecuritySettingsDto = exports.UpdatePaymentSettingsDto = void 0;
 const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class UpdatePaymentSettingsDto {
@@ -77,6 +77,42 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateNoticeDto.prototype, "globalNotice", void 0);
+class UpdateSupportContactsDto {
+    phone;
+    viber;
+    telegram;
+    tiktok;
+    facebook;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { phone: { required: false, type: () => String }, viber: { required: false, type: () => String }, telegram: { required: false, type: () => String }, tiktok: { required: false, type: () => String }, facebook: { required: false, type: () => String } };
+    }
+}
+exports.UpdateSupportContactsDto = UpdateSupportContactsDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateSupportContactsDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateSupportContactsDto.prototype, "viber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateSupportContactsDto.prototype, "telegram", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateSupportContactsDto.prototype, "tiktok", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateSupportContactsDto.prototype, "facebook", void 0);
 class UpdateTelegramBotDto {
     botToken;
     chatIds;

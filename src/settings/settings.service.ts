@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
+import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, UpdateSupportContactsDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
 
 @Injectable()
 export class SettingsService {
@@ -70,6 +70,14 @@ export class SettingsService {
   async updateNotice(dto: UpdateNoticeDto) {
     await this.setSetting('global_notice', dto.globalNotice);
     return { message: 'Notice updated' };
+  }
+
+  async updateSupportContacts(dto: UpdateSupportContactsDto) {
+    const current = await this.getSetting('support_contacts');
+    const currentObj = current ? JSON.parse(current) : {};
+    const updated = { ...currentObj, ...dto };
+    await this.setSetting('support_contacts', JSON.stringify(updated));
+    return { message: 'Support contacts updated' };
   }
 
   async updateTelegramBot(dto: UpdateTelegramBotDto) {

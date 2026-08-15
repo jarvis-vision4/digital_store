@@ -1,5 +1,5 @@
 import { SettingsService } from './settings.service';
-import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
+import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, UpdateSupportContactsDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
 export declare class SettingsController {
     private settingsService;
     constructor(settingsService: SettingsService);
@@ -23,6 +23,9 @@ export declare class SettingsController {
         message: string;
     }>;
     updateSecuritySettings(dto: UpdateSecuritySettingsDto): Promise<{
+        message: string;
+    }>;
+    updateSupportContacts(dto: UpdateSupportContactsDto): Promise<{
         message: string;
     }>;
     updateNotice(dto: UpdateNoticeDto): Promise<{

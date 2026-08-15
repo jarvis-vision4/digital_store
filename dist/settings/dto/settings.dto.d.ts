@@ -12,6 +12,13 @@ export declare class UpdateSecuritySettingsDto {
 export declare class UpdateNoticeDto {
     globalNotice: string;
 }
+export declare class UpdateSupportContactsDto {
+    phone?: string;
+    viber?: string;
+    telegram?: string;
+    tiktok?: string;
+    facebook?: string;
+}
 export declare class UpdateTelegramBotDto {
     botToken?: string;
     chatIds?: string;

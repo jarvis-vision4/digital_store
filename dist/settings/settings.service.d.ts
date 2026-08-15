@@ -1,5 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
+import { UpdatePaymentSettingsDto, UpdateSecuritySettingsDto, UpdateNoticeDto, UpdateTelegramBotDto, UpdateSupportContactsDto, CreateBannerDto, UpdateBannerDto } from './dto/settings.dto';
 export declare class SettingsService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -28,6 +28,9 @@ export declare class SettingsService {
         message: string;
     }>;
     updateNotice(dto: UpdateNoticeDto): Promise<{
+        message: string;
+    }>;
+    updateSupportContacts(dto: UpdateSupportContactsDto): Promise<{
         message: string;
     }>;
     updateTelegramBot(dto: UpdateTelegramBotDto): Promise<{
