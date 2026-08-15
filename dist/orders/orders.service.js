@@ -19,11 +19,6 @@ let OrdersService = class OrdersService {
         this.prisma = prisma;
     }
     async create(userId, dto) {
-        const game = await this.prisma.game.findUnique({
-            where: { id: dto.gameId },
-        });
-        if (!game)
-            throw new common_1.NotFoundException('Game not found');
         const user = await this.prisma.user.findUnique({
             where: { id: BigInt(userId) },
         });

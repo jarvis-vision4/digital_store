@@ -13,15 +13,6 @@ enum UserRole {
   CUSTOMER
 }
 
-enum GameCategory {
-  mobile_games
-  pc_games
-  gift_card
-  mobile_app
-  redeem_code
-  social_service
-}
-
 enum OrderStatus {
   Pending
   Success
@@ -83,41 +74,6 @@ model User {
   @@map("users")
 }
 
-model Game {
-  id          String        @id @db.VarChar(50)
-  name        String        @db.VarChar(150)
-  category    GameCategory
-  image       String        @db.VarChar(255)
-  posterUrl   String?       @map("poster_url") @db.VarChar(255)
-  description String?       @db.Text
-  popular     Boolean       @default(false)
-  isActive    Boolean       @default(true) @map("is_active")
-  sortOrder   Int           @default(1) @map("sort_order")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-
-  packages GamePackage[]
-  orders   Order[]
-
-  @@map("games")
-}
-
-model GamePackage {
-  id             BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  gameId         String   @map("game_id") @db.VarChar(50)
-  packageName    String   @map("package_name") @db.VarChar(200)
-  priceMmk       Decimal  @map("price_mmk") @db.Decimal(12, 2)
-  stockQuantity  Int      @default(9999) @map("stock_quantity")
-  originalPrice  Decimal? @map("original_price") @db.Decimal(12, 2)
-  isActive       Boolean  @default(true) @map("is_active")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
-
-  @@map("game_packages")
-}
-
 model DigitalProduct {
   id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   name        String   @db.VarChar(200)
@@ -170,7 +126,6 @@ model Order {
   updatedAt       DateTime     @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  game Game? @relation(fields: [gameId], references: [id])
 
   @@index([status])
   @@map("orders")

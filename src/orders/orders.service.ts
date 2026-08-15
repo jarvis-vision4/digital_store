@@ -8,11 +8,6 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: number, dto: CreateOrderDto) {
-    const game = await this.prisma.game.findUnique({
-      where: { id: dto.gameId },
-    });
-    if (!game) throw new NotFoundException('Game not found');
-
     const user = await this.prisma.user.findUnique({
       where: { id: BigInt(userId) },
     });

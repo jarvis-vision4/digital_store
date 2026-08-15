@@ -17,7 +17,6 @@ REST API for the Shwe Family Digital Store — a game top-up and digital product
 ## Features
 
 - **Auth**: register (with auto-rewarded referral bonus), login by email, profile, change password
-- **Games**: public catalog with packages; admin CRUD with inline package creation; image upload
 - **Digital products**: public list, admin CRUD with image upload and manual availability flag
 - **Orders**: game top-up ordering, rating/reviews, admin deliver/cancel (refund)/delete
 - **Digital orders**: separate flow (`digital_orders` table), pending → approve/reject (reject refunds wallet)
@@ -78,15 +77,13 @@ All routes are under `/api/v1`. Admin routes require a JWT with `ADMIN` or `MODE
 
 | Area | Public routes | Admin routes |
 |---|---|---|
-| Games | `GET /games`, `GET /games/:id` | `POST/PUT/DELETE /admin/games`, `POST /admin/games/upload` |
-| Packages | — | `POST /admin/games/:id/packages`, `PUT /admin/packages/:id` |
 | Digital products | `GET /digital-products` | `GET/POST/PUT /admin/digital-products(/:id)` |
 | Digital orders | `POST /digital-orders`, `GET /digital-orders`, `POST /digital-products/:id/order` | `GET /admin/digital-orders`, `POST /admin/digital-orders/:id/{approve,reject}`, `DELETE /admin/digital-orders/:id` |
 | Wallet | `GET /wallet/balance`, `GET /wallet/transactions`, `POST /wallet/deposit`, `POST /wallet/coupons/redeem` | top-up approval, coupon generation |
 | Settings | `GET /banners`, `GET /notice`, `GET /support`, `GET /settings/payment` | banners CRUD, settings updates, statistics, audit logs |
 | Auth | `POST /auth/register`, `POST /auth/login` | — |
 
-File upload endpoints (games, banners, digital products) accept `multipart/form-data` with an `image` (or `file`) field; uploaded files are served under `/uploads/`.
+File upload endpoints (banners, digital products) accept `multipart/form-data` with an `image` (or `file`) field; uploaded files are served under `/uploads/`.
 
 Full interactive documentation: `/api/docs`.
 
@@ -121,7 +118,7 @@ The production `.env` lives on the server at `/var/www/shwefamilydm/.env` (not i
 src/
 ├── auth/             # register, login, JWT, profile, referrals
 ├── admin/            # user management, roles, rewards
-├── games/            # games, packages, digital products, uploads
+├── games/            # digital products CRUD, uploads
 ├── orders/           # game top-up orders, reviews
 ├── digital-orders/   # digital product order flow
 ├── wallet/           # balance, deposits, coupons

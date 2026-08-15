@@ -9,9 +9,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -25,9 +25,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -41,9 +41,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -57,8 +57,8 @@ export declare class OrdersService {
         };
         id: string;
         createdAt: Date;
-        packageName: string;
         gameName: string;
+        packageName: string;
         rating: number | null;
         reviewText: string | null;
     }[]>;
@@ -73,9 +73,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -89,9 +89,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -105,9 +105,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
@@ -121,9 +121,9 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        packageName: string;
         gameId: string | null;
         gameName: string;
+        packageName: string;
         amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
