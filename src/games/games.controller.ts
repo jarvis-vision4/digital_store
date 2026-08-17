@@ -129,6 +129,15 @@ export class GamesController {
     return this.gamesService.updateDigitalProduct(id, dto, imagePath);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
+  @Delete('admin/digital-products/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a digital product (soft-deletes if it has order history)' })
+  deleteDigitalProduct(@Param('id') id: string) {
+    return this.gamesService.deleteDigitalProduct(id);
+  }
+
   // ── Admin: Variant management ───────────────────────
 
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -160,6 +160,31 @@ let GamesService = class GamesService {
         });
         return products.map((p) => this.withStockFlags(p));
     }
+    async deleteDigitalProduct(id) {
+        const product = await this.prisma.digitalProduct.findUnique({
+            where: { id: BigInt(id) },
+        });
+        if (!product)
+            throw new common_1.NotFoundException('Digital product not found');
+        const orderCount = await this.prisma.digitalOrder.count({
+            where: { digitalProductId: BigInt(id) },
+        });
+        if (orderCount > 0) {
+            await this.prisma.digitalProduct.update({
+                where: { id: BigInt(id) },
+                data: { isActive: false },
+            });
+            return { message: 'Product hidden (has order history)' };
+        }
+        await this.prisma.digitalProductVariant.deleteMany({
+            where: { digitalProductId: BigInt(id) },
+        });
+        await this.prisma.digitalProductFeature.deleteMany({
+            where: { digitalProductId: BigInt(id) },
+        });
+        await this.prisma.digitalProduct.delete({ where: { id: BigInt(id) } });
+        return { message: 'Product deleted' };
+    }
     async addVariant(productId, dto) {
         const product = await this.prisma.digitalProduct.findUnique({
             where: { id: BigInt(productId) },

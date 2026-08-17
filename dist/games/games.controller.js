@@ -47,6 +47,9 @@ let GamesController = class GamesController {
         const imagePath = (0, multer_config_1.toPublicPath)(image?.path);
         return this.gamesService.updateDigitalProduct(id, dto, imagePath);
     }
+    deleteDigitalProduct(id) {
+        return this.gamesService.deleteDigitalProduct(id);
+    }
     addVariant(id, dto) {
         return this.gamesService.addVariant(id, dto);
     }
@@ -181,6 +184,18 @@ __decorate([
     __metadata("design:paramtypes", [String, games_dto_1.CreateDigitalProductDto, Object]),
     __metadata("design:returntype", void 0)
 ], GamesController.prototype, "updateDigitalProduct", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),
+    (0, common_1.Delete)('admin/digital-products/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete a digital product (soft-deletes if it has order history)' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], GamesController.prototype, "deleteDigitalProduct", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.MODERATOR),

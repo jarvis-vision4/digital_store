@@ -10,6 +10,9 @@ export declare class GamesService {
     updateDigitalProduct(id: string, dto: CreateDigitalProductDto, imagePath?: string): Promise<any>;
     private syncVariants;
     getDigitalProductsAdmin(): Promise<any[]>;
+    deleteDigitalProduct(id: string): Promise<{
+        message: string;
+    }>;
     addVariant(productId: string, dto: any): Promise<{
         id: bigint;
         isActive: boolean;

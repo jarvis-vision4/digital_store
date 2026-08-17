@@ -8,6 +8,9 @@ export declare class GamesController {
     getDigitalProductsAdmin(): Promise<any[]>;
     storeDigitalProduct(dto: CreateDigitalProductDto, image?: Express.Multer.File): Promise<any>;
     updateDigitalProduct(id: string, dto: CreateDigitalProductDto, image?: Express.Multer.File): Promise<any>;
+    deleteDigitalProduct(id: string): Promise<{
+        message: string;
+    }>;
     addVariant(id: string, dto: any): Promise<{
         id: bigint;
         isActive: boolean;
