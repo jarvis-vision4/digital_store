@@ -9,15 +9,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }>;
     userOrders(userId: number): Promise<{
         id: string;
@@ -25,15 +25,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }[]>;
     rateOrder(userId: number, orderId: string, dto: RateOrderDto): Promise<{
         id: string;
@@ -41,15 +41,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }>;
     getPublicReviews(): Promise<{
         user: {
@@ -57,9 +57,9 @@ export declare class OrdersService {
         };
         id: string;
         createdAt: Date;
+        rating: number | null;
         gameName: string;
         packageName: string;
-        rating: number | null;
         reviewText: string | null;
     }[]>;
     adminOrders(): Promise<({
@@ -73,15 +73,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     })[]>;
     deliverOrder(orderId: string): Promise<{
         id: string;
@@ -89,15 +89,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }>;
     cancelOrder(orderId: string): Promise<{
         id: string;
@@ -105,15 +105,15 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }>;
     deleteOrder(orderId: string): Promise<{
         id: string;
@@ -121,14 +121,14 @@ export declare class OrdersService {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
+        rating: number | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
         gameId: string | null;
         gameName: string;
         packageName: string;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
         playerId: string | null;
         zoneId: string | null;
-        rating: number | null;
         reviewText: string | null;
-        deliveryContent: string | null;
     }>;
 }

@@ -12,8 +12,8 @@ export declare class SettingsService {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }[]>;
     getGlobalNotice(): Promise<{
         notice: string;
@@ -43,8 +43,8 @@ export declare class SettingsService {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }[]>;
     storeBanner(dto: CreateBannerDto, imagePath?: string): Promise<{
         id: string;
@@ -53,8 +53,8 @@ export declare class SettingsService {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     updateBanner(id: string, dto: UpdateBannerDto, imagePath?: string): Promise<{
         id: string;
@@ -63,8 +63,8 @@ export declare class SettingsService {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     deleteBanner(id: string): Promise<{
         id: string;
@@ -73,8 +73,8 @@ export declare class SettingsService {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     getAdminStats(): Promise<{
         totalUsers: number;

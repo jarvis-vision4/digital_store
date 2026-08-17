@@ -10,8 +10,8 @@ export declare class SettingsController {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }[]>;
     getGlobalNotice(): Promise<{
         notice: string;
@@ -41,8 +41,8 @@ export declare class SettingsController {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }[]>;
     storeBanner(dto: CreateBannerDto, image?: Express.Multer.File): Promise<{
         id: string;
@@ -51,8 +51,8 @@ export declare class SettingsController {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     updateBanner(id: string, dto: UpdateBannerDto, image?: Express.Multer.File): Promise<{
         id: string;
@@ -61,8 +61,8 @@ export declare class SettingsController {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     deleteBanner(id: string): Promise<{
         id: string;
@@ -71,8 +71,8 @@ export declare class SettingsController {
         updatedAt: Date;
         description: string | null;
         title: string;
-        imageUrl: string;
         badge: string | null;
+        imageUrl: string;
     }>;
     getAdminStats(): Promise<{
         totalUsers: number;

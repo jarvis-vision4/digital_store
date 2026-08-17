@@ -9,21 +9,27 @@ export declare class DigitalOrdersController {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }>;
-    createByProductId(userId: number, productId: string): Promise<{
+    createByProductId(userId: number, productId: string, body: {
+        variantId?: string;
+    }): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }>;
     userOrders(userId: number): Promise<{
         id: string;
@@ -31,10 +37,12 @@ export declare class DigitalOrdersController {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }[]>;
     adminOrders(): Promise<({
         user: {
@@ -44,16 +52,22 @@ export declare class DigitalOrdersController {
         digitalProduct: {
             name: string;
         };
+        digitalProductVariant: {
+            name: string;
+            durationDays: number;
+        } | null;
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     })[]>;
     deleteOrder(orderId: string): Promise<{
         id: string;
@@ -61,10 +75,12 @@ export declare class DigitalOrdersController {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }>;
     approveOrder(orderId: string): Promise<{
         id: string;
@@ -72,10 +88,12 @@ export declare class DigitalOrdersController {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }>;
     rejectOrder(orderId: string): Promise<{
         id: string;
@@ -83,9 +101,11 @@ export declare class DigitalOrdersController {
         updatedAt: Date;
         status: import("@prisma/client").$Enums.OrderStatus;
         userId: bigint;
-        amountMmk: import("@prisma/client/runtime/library").Decimal;
-        deliveryContent: string | null;
         digitalProductId: bigint;
         productName: string;
+        variantName: string | null;
+        amountMmk: import("@prisma/client/runtime/library").Decimal;
+        deliveryContent: string | null;
+        digitalProductVariantId: bigint | null;
     }>;
 }

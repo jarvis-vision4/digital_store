@@ -31,8 +31,8 @@ let DigitalOrdersController = class DigitalOrdersController {
     create(userId, dto) {
         return this.digitalOrdersService.create(userId, dto);
     }
-    createByProductId(userId, productId) {
-        return this.digitalOrdersService.createByProductId(userId, productId);
+    createByProductId(userId, productId, body) {
+        return this.digitalOrdersService.createByProductId(userId, productId, body.variantId);
     }
     userOrders(userId) {
         return this.digitalOrdersService.userOrders(userId);
@@ -67,12 +67,13 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('digital-products/:id/order'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Purchase a digital product by product ID' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Purchase a digital product by product ID (optional variantId)' }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
     __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:paramtypes", [Number, String, Object]),
     __metadata("design:returntype", void 0)
 ], DigitalOrdersController.prototype, "createByProductId", null);
 __decorate([

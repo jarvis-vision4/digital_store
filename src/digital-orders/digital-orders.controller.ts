@@ -23,9 +23,13 @@ export class DigitalOrdersController {
   @UseGuards(JwtAuthGuard)
   @Post('digital-products/:id/order')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Purchase a digital product by product ID' })
-  createByProductId(@CurrentUser('id') userId: number, @Param('id') productId: string) {
-    return this.digitalOrdersService.createByProductId(userId, productId);
+  @ApiOperation({ summary: 'Purchase a digital product by product ID (optional variantId)' })
+  createByProductId(
+    @CurrentUser('id') userId: number,
+    @Param('id') productId: string,
+    @Body() body: { variantId?: string },
+  ) {
+    return this.digitalOrdersService.createByProductId(userId, productId, body.variantId);
   }
 
   @UseGuards(JwtAuthGuard)

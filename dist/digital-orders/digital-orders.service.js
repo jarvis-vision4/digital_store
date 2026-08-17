@@ -29,52 +29,17 @@ let DigitalOrdersService = class DigitalOrdersService {
         });
         if (!user)
             throw new common_1.NotFoundException('User not found');
-        if (Number(user.walletBalance) < dto.amountMmk) {
-            throw new common_1.BadRequestException('Insufficient wallet balance');
+        let amount = dto.amountMmk;
+        let variantName = dto.variantName || null;
+        if (dto.digitalProductVariantId) {
+            const variant = await this.prisma.digitalProductVariant.findUnique({
+                where: { id: BigInt(dto.digitalProductVariantId) },
+            });
+            if (!variant)
+                throw new common_1.NotFoundException('Variant not found');
+            amount = Number(variant.priceMmk);
+            variantName = variant.name;
         }
-        const orderId = (0, uuid_1.v4)();
-        const [order] = await this.prisma.$transaction([
-            this.prisma.digitalOrder.create({
-                data: {
-                    id: orderId,
-                    userId: BigInt(userId),
-                    digitalProductId: product.id,
-                    productName: dto.productName,
-                    amountMmk: dto.amountMmk,
-                    status: 'Pending',
-                    deliveryContent: product.description || 'Digital product delivery',
-                },
-            }),
-            this.prisma.user.update({
-                where: { id: BigInt(userId) },
-                data: { walletBalance: { decrement: dto.amountMmk } },
-            }),
-            this.prisma.walletTransaction.create({
-                data: {
-                    id: (0, uuid_1.v4)(),
-                    userId: BigInt(userId),
-                    amount: -dto.amountMmk,
-                    type: 'ORDER_SPEND',
-                    paymentMethod: 'Wallet',
-                    phone: '',
-                    status: 'Success',
-                },
-            }),
-        ]);
-        return order;
-    }
-    async createByProductId(userId, productId) {
-        const product = await this.prisma.digitalProduct.findUnique({
-            where: { id: BigInt(productId) },
-        });
-        if (!product)
-            throw new common_1.NotFoundException('Digital product not found');
-        const user = await this.prisma.user.findUnique({
-            where: { id: BigInt(userId) },
-        });
-        if (!user)
-            throw new common_1.NotFoundException('User not found');
-        const amount = Number(product.priceMmk);
         if (Number(user.walletBalance) < amount) {
             throw new common_1.BadRequestException('Insufficient wallet balance');
         }
@@ -85,7 +50,9 @@ let DigitalOrdersService = class DigitalOrdersService {
                     id: orderId,
                     userId: BigInt(userId),
                     digitalProductId: product.id,
-                    productName: product.name,
+                    digitalProductVariantId: dto.digitalProductVariantId ? BigInt(dto.digitalProductVariantId) : null,
+                    productName: dto.productName,
+                    variantName,
                     amountMmk: amount,
                     status: 'Pending',
                     deliveryContent: product.description || 'Digital product delivery',
@@ -106,6 +73,74 @@ let DigitalOrdersService = class DigitalOrdersService {
                     status: 'Success',
                 },
             }),
+            this.prisma.digitalProduct.update({
+                where: { id: product.id },
+                data: { salesCount: { increment: 1 } },
+            }),
+        ]);
+        return order;
+    }
+    async createByProductId(userId, productId, variantId) {
+        const product = await this.prisma.digitalProduct.findUnique({
+            where: { id: BigInt(productId) },
+        });
+        if (!product)
+            throw new common_1.NotFoundException('Digital product not found');
+        const user = await this.prisma.user.findUnique({
+            where: { id: BigInt(userId) },
+        });
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        let amount = Number(product.priceMmk);
+        let variantName = null;
+        let resolvedVariantId = null;
+        if (variantId) {
+            const variant = await this.prisma.digitalProductVariant.findUnique({
+                where: { id: BigInt(variantId) },
+            });
+            if (!variant)
+                throw new common_1.NotFoundException('Variant not found');
+            amount = Number(variant.priceMmk);
+            variantName = variant.name;
+            resolvedVariantId = variant.id;
+        }
+        if (Number(user.walletBalance) < amount) {
+            throw new common_1.BadRequestException('Insufficient wallet balance');
+        }
+        const orderId = (0, uuid_1.v4)();
+        const [order] = await this.prisma.$transaction([
+            this.prisma.digitalOrder.create({
+                data: {
+                    id: orderId,
+                    userId: BigInt(userId),
+                    digitalProductId: product.id,
+                    digitalProductVariantId: resolvedVariantId,
+                    productName: product.name,
+                    variantName,
+                    amountMmk: amount,
+                    status: 'Pending',
+                    deliveryContent: product.description || 'Digital product delivery',
+                },
+            }),
+            this.prisma.user.update({
+                where: { id: BigInt(userId) },
+                data: { walletBalance: { decrement: amount } },
+            }),
+            this.prisma.walletTransaction.create({
+                data: {
+                    id: (0, uuid_1.v4)(),
+                    userId: BigInt(userId),
+                    amount: -amount,
+                    type: 'ORDER_SPEND',
+                    paymentMethod: 'Wallet',
+                    phone: '',
+                    status: 'Success',
+                },
+            }),
+            this.prisma.digitalProduct.update({
+                where: { id: product.id },
+                data: { salesCount: { increment: 1 } },
+            }),
         ]);
         return order;
     }
@@ -120,6 +155,7 @@ let DigitalOrdersService = class DigitalOrdersService {
             include: {
                 user: { select: { id: true, username: true } },
                 digitalProduct: { select: { name: true } },
+                digitalProductVariant: { select: { name: true, durationDays: true } },
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -177,6 +213,10 @@ let DigitalOrdersService = class DigitalOrdersService {
                     phone: '',
                     status: 'Success',
                 },
+            }),
+            this.prisma.digitalProduct.update({
+                where: { id: order.digitalProductId },
+                data: { salesCount: { decrement: 1 } },
             }),
         ]);
         return updatedOrder;

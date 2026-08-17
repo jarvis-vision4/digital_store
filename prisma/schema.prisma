@@ -81,29 +81,70 @@ model DigitalProduct {
   description String?  @db.Text
   image       String?  @db.VarChar(500)
   priceMmk    Decimal  @map("price_mmk") @db.Decimal(12, 2)
+  rating      Decimal  @default(0) @db.Decimal(3, 1)
+  salesCount  Int      @default(0) @map("sales_count")
+  badge       String?  @db.VarChar(50)
   isAvailable Boolean  @default(true) @map("is_available")
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  digitalOrders DigitalOrder[]
+  digitalOrders    DigitalOrder[]
+  variants         DigitalProductVariant[]
+  features         DigitalProductFeature[]
 
   @@map("digital_products")
 }
 
-model DigitalOrder {
-  id              String        @id @db.VarChar(100)
-  userId          BigInt        @map("user_id") @db.UnsignedBigInt
-  digitalProductId BigInt       @map("digital_product_id") @db.UnsignedBigInt
-  productName     String        @map("product_name") @db.VarChar(200)
-  amountMmk       Decimal       @map("amount_mmk") @db.Decimal(12, 2)
-  status          OrderStatus   @default(Pending)
-  deliveryContent String?       @map("delivery_content") @db.Text
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+model DigitalProductVariant {
+  id              BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  digitalProductId BigInt  @map("digital_product_id") @db.UnsignedBigInt
+  name            String   @db.VarChar(200)
+  durationDays    Int      @map("duration_days")
+  priceMmk        Decimal  @map("price_mmk") @db.Decimal(12, 2)
+  priceUsd        Decimal? @map("price_usd") @db.Decimal(10, 2)
+  badge           String?  @db.VarChar(50)
+  sortOrder       Int      @default(0) @map("sort_order")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  digitalProduct DigitalProduct @relation(fields: [digitalProductId], references: [id])
+  digitalProduct DigitalProduct @relation(fields: [digitalProductId], references: [id], onDelete: Cascade)
+  digitalOrders  DigitalOrder[]
+
+  @@index([digitalProductId])
+  @@map("digital_product_variants")
+}
+
+model DigitalProductFeature {
+  id              BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  digitalProductId BigInt  @map("digital_product_id") @db.UnsignedBigInt
+  name            String   @db.VarChar(200)
+  sortOrder       Int      @default(0) @map("sort_order")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  digitalProduct DigitalProduct @relation(fields: [digitalProductId], references: [id], onDelete: Cascade)
+
+  @@index([digitalProductId])
+  @@map("digital_product_features")
+}
+
+model DigitalOrder {
+  id                    String          @id @db.VarChar(100)
+  userId                BigInt          @map("user_id") @db.UnsignedBigInt
+  digitalProductId      BigInt          @map("digital_product_id") @db.UnsignedBigInt
+  digitalProductVariantId BigInt?       @map("digital_product_variant_id") @db.UnsignedBigInt
+  productName           String          @map("product_name") @db.VarChar(200)
+  variantName           String?         @map("variant_name") @db.VarChar(200)
+  amountMmk             Decimal         @map("amount_mmk") @db.Decimal(12, 2)
+  status                OrderStatus     @default(Pending)
+  deliveryContent       String?         @map("delivery_content") @db.Text
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
+
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  digitalProduct     DigitalProduct        @relation(fields: [digitalProductId], references: [id])
+  digitalProductVariant DigitalProductVariant? @relation(fields: [digitalProductVariantId], references: [id])
 
   @@index([status])
   @@map("digital_orders")
