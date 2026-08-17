@@ -1,4 +1,5 @@
 export declare class CreateVariantDto {
+    id?: number;
     name: string;
     durationDays: number;
     priceMmk: number;

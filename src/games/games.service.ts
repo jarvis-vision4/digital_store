@@ -74,19 +74,9 @@ export class GamesService {
       ...(imagePath ? { image: imagePath } : {}),
     };
 
-    // Handle variants: delete existing and recreate
+    // Handle variants: update in place by id, create new ones, soft-disable removed
     if (variants) {
-      await this.prisma.digitalProductVariant.deleteMany({
-        where: { digitalProductId: BigInt(id) },
-      });
-      if (variants.length > 0) {
-        updateData.variants = {
-          create: variants.map((v, i) => ({
-            ...v,
-            sortOrder: v.sortOrder ?? i,
-          })),
-        };
-      }
+      await this.syncVariants(id, variants);
     }
 
     // Handle features: delete existing and recreate
@@ -110,6 +100,58 @@ export class GamesService {
       include: this.productInclude,
     });
     return this.withStockFlags(updated);
+  }
+
+  private async syncVariants(productId: string, variants: NonNullable<CreateDigitalProductDto['variants']>) {
+    const productBigInt = BigInt(productId);
+    const existingVariants = await this.prisma.digitalProductVariant.findMany({
+      where: { digitalProductId: productBigInt },
+    });
+
+    const incomingIds = new Set<string>();
+    for (const v of variants) {
+      if (v.id) {
+        incomingIds.add(String(v.id));
+        await this.prisma.digitalProductVariant.update({
+          where: { id: BigInt(v.id) },
+          data: {
+            name: v.name,
+            durationDays: v.durationDays,
+            priceMmk: v.priceMmk,
+            priceUsd: v.priceUsd,
+            badge: v.badge,
+            sortOrder: v.sortOrder ?? 0,
+            isActive: v.isActive ?? true,
+          },
+        });
+      } else {
+        await this.prisma.digitalProductVariant.create({
+          data: {
+            digitalProductId: productBigInt,
+            name: v.name,
+            durationDays: v.durationDays,
+            priceMmk: v.priceMmk,
+            priceUsd: v.priceUsd,
+            badge: v.badge,
+            sortOrder: v.sortOrder ?? 0,
+            isActive: v.isActive ?? true,
+          },
+        });
+      }
+    }
+
+    // Removed variants: try delete, fall back to soft-disable when referenced by orders
+    for (const ev of existingVariants) {
+      if (incomingIds.has(String(ev.id))) continue;
+      try {
+        await this.prisma.digitalProductVariant.delete({ where: { id: ev.id } });
+      } catch {
+        await this.prisma.digitalProductVariant.update({
+          where: { id: ev.id },
+          data: { isActive: false },
+        });
+      }
+    }
   }
 
   async getDigitalProductsAdmin() {

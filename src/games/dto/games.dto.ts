@@ -14,6 +14,11 @@ function ParseJsonArray() {
 }
 
 export class CreateVariantDto {
+  @ApiPropertyOptional({ description: 'Existing variant ID to update in place (omit to create new)' })
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @ApiProperty({ example: '1 Month Pro' })
   @IsString()
   name!: string;

@@ -27,6 +27,7 @@ function ParseJsonArray() {
     });
 }
 class CreateVariantDto {
+    id;
     name;
     durationDays;
     priceMmk;
@@ -35,10 +36,16 @@ class CreateVariantDto {
     sortOrder;
     isActive;
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, durationDays: { required: true, type: () => Number, minimum: 1 }, priceMmk: { required: true, type: () => Number, minimum: 0 }, priceUsd: { required: false, type: () => Number, minimum: 0 }, badge: { required: false, type: () => String }, sortOrder: { required: false, type: () => Number }, isActive: { required: false, type: () => Boolean } };
+        return { id: { required: false, type: () => Number }, name: { required: true, type: () => String }, durationDays: { required: true, type: () => Number, minimum: 1 }, priceMmk: { required: true, type: () => Number, minimum: 0 }, priceUsd: { required: false, type: () => Number, minimum: 0 }, badge: { required: false, type: () => String }, sortOrder: { required: false, type: () => Number }, isActive: { required: false, type: () => Boolean } };
     }
 }
 exports.CreateVariantDto = CreateVariantDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Existing variant ID to update in place (omit to create new)' }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateVariantDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '1 Month Pro' }),
     (0, class_validator_1.IsString)(),

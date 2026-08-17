@@ -80,17 +80,7 @@ let GamesService = class GamesService {
             ...(imagePath ? { image: imagePath } : {}),
         };
         if (variants) {
-            await this.prisma.digitalProductVariant.deleteMany({
-                where: { digitalProductId: BigInt(id) },
-            });
-            if (variants.length > 0) {
-                updateData.variants = {
-                    create: variants.map((v, i) => ({
-                        ...v,
-                        sortOrder: v.sortOrder ?? i,
-                    })),
-                };
-            }
+            await this.syncVariants(id, variants);
         }
         if (features) {
             await this.prisma.digitalProductFeature.deleteMany({
@@ -111,6 +101,57 @@ let GamesService = class GamesService {
             include: this.productInclude,
         });
         return this.withStockFlags(updated);
+    }
+    async syncVariants(productId, variants) {
+        const productBigInt = BigInt(productId);
+        const existingVariants = await this.prisma.digitalProductVariant.findMany({
+            where: { digitalProductId: productBigInt },
+        });
+        const incomingIds = new Set();
+        for (const v of variants) {
+            if (v.id) {
+                incomingIds.add(String(v.id));
+                await this.prisma.digitalProductVariant.update({
+                    where: { id: BigInt(v.id) },
+                    data: {
+                        name: v.name,
+                        durationDays: v.durationDays,
+                        priceMmk: v.priceMmk,
+                        priceUsd: v.priceUsd,
+                        badge: v.badge,
+                        sortOrder: v.sortOrder ?? 0,
+                        isActive: v.isActive ?? true,
+                    },
+                });
+            }
+            else {
+                await this.prisma.digitalProductVariant.create({
+                    data: {
+                        digitalProductId: productBigInt,
+                        name: v.name,
+                        durationDays: v.durationDays,
+                        priceMmk: v.priceMmk,
+                        priceUsd: v.priceUsd,
+                        badge: v.badge,
+                        sortOrder: v.sortOrder ?? 0,
+                        isActive: v.isActive ?? true,
+                    },
+                });
+            }
+        }
+        for (const ev of existingVariants) {
+            if (incomingIds.has(String(ev.id)))
+                continue;
+            try {
+                await this.prisma.digitalProductVariant.delete({ where: { id: ev.id } });
+            }
+            catch {
+                await this.prisma.digitalProductVariant.update({
+                    where: { id: ev.id },
+                    data: { isActive: false },
+                });
+            }
+        }
     }
     async getDigitalProductsAdmin() {
         const products = await this.prisma.digitalProduct.findMany({
