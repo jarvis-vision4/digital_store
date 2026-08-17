@@ -155,6 +155,7 @@ let GamesService = class GamesService {
     }
     async getDigitalProductsAdmin() {
         const products = await this.prisma.digitalProduct.findMany({
+            where: { isActive: true },
             include: this.productInclude,
             orderBy: { createdAt: 'desc' },
         });
