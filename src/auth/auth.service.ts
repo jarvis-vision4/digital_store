@@ -153,8 +153,6 @@ export class AuthService {
         walletBalance: true,
         referralCode: true,
         referredBy: true,
-        vipLevel: true,
-        vipName: true,
         discountRate: true,
         role: true,
         createdAt: true,

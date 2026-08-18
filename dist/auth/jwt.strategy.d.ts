@@ -16,8 +16,6 @@ export declare class JwtStrategy extends JwtStrategy_base {
         email: string | null;
         referralCode: string;
         walletBalance: import("@prisma/client/runtime/library").Decimal;
-        vipLevel: number;
-        vipName: string;
         role: import("@prisma/client").$Enums.UserRole;
         isActive: boolean;
     }>;

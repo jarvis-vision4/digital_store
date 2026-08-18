@@ -14,8 +14,6 @@ export class AdminService {
         email: true,
         role: true,
         isActive: true,
-        vipLevel: true,
-        vipName: true,
         walletBalance: true,
         referralCode: true,
         createdAt: true,

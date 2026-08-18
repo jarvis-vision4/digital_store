@@ -36,8 +36,6 @@ export declare class AuthService {
         referralCode: string;
         id: bigint;
         referredBy: string | null;
-        vipLevel: number;
-        vipName: string;
         discountRate: import("@prisma/client/runtime/library").Decimal;
         role: import("@prisma/client").$Enums.UserRole;
         createdAt: Date;

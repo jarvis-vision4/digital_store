@@ -23,8 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         role: true,
         isActive: true,
         walletBalance: true,
-        vipLevel: true,
-        vipName: true,
         referralCode: true,
       },
     });

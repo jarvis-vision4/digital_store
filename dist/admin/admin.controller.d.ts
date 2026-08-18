@@ -8,8 +8,6 @@ export declare class AdminController {
         referralCode: string;
         id: bigint;
         walletBalance: import("@prisma/client/runtime/library").Decimal;
-        vipLevel: number;
-        vipName: string;
         role: import("@prisma/client").$Enums.UserRole;
         isActive: boolean;
         createdAt: Date;

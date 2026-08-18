@@ -52,8 +52,6 @@ model User {
   telegramChatId String?   @unique @map("telegram_chat_id") @db.VarChar(100)
   referralCode   String    @unique @map("referral_code") @db.VarChar(50)
   referredBy     String?   @map("referred_by") @db.VarChar(50)
-  vipLevel       Int       @default(0) @map("vip_level")
-  vipName        String    @default("Standard Gamer") @map("vip_name") @db.VarChar(50)
   discountRate   Decimal   @default(0.0000) @map("discount_rate") @db.Decimal(5, 4)
   role           UserRole  @default(CUSTOMER)
   isActive       Boolean   @default(true) @map("is_active")
