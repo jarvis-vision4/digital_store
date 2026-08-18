@@ -68,6 +68,7 @@ model User {
   referralsReceived Referral[]    @relation("Referee")
   digitalOrders    DigitalOrder[]
   auditLogs        AuditLog[]
+  chatMessages     ChatMessage[]
 
   @@index([referralCode])
   @@index([telegramChatId])
@@ -254,4 +255,19 @@ model AuditLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("audit_logs")
+}
+
+model ChatMessage {
+  id            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  userId        BigInt    @map("user_id") @db.UnsignedBigInt
+  senderRole    UserRole  @map("sender_role")
+  content       String    @db.Text
+  readByUserAt  DateTime? @map("read_by_user_at")
+  readByAdminAt DateTime? @map("read_by_admin_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("chat_messages")
 }

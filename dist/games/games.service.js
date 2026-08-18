@@ -21,6 +21,72 @@ let GamesService = class GamesService {
         variants: { orderBy: { sortOrder: 'asc' } },
         features: { orderBy: { sortOrder: 'asc' } },
     };
+    parseArrayInput(input) {
+        if (input === undefined || input === null)
+            return [];
+        if (Array.isArray(input))
+            return input;
+        if (typeof input === 'string') {
+            try {
+                const parsed = JSON.parse(input);
+                if (Array.isArray(parsed))
+                    return parsed;
+            }
+            catch {
+                throw new common_1.BadRequestException('Invalid JSON array for variants/features');
+            }
+        }
+        return [];
+    }
+    toNumber(value) {
+        if (value === undefined || value === null || value === '')
+            return undefined;
+        const n = Number(value);
+        return Number.isNaN(n) ? undefined : n;
+    }
+    toBoolean(value) {
+        if (value === undefined || value === null || value === '')
+            return undefined;
+        if (typeof value === 'boolean')
+            return value;
+        return value === 'true' || value === '1' || value === 1;
+    }
+    normalizeVariant(raw, index) {
+        const v = (raw ?? {});
+        const name = typeof v.name === 'string' ? v.name : undefined;
+        const durationDays = this.toNumber(v.durationDays);
+        const priceMmk = this.toNumber(v.priceMmk);
+        if (!name) {
+            throw new common_1.BadRequestException(`Variant #${index + 1} is missing required field "name"`);
+        }
+        if (durationDays === undefined) {
+            throw new common_1.BadRequestException(`Variant "${name}" is missing required field "durationDays"`);
+        }
+        if (priceMmk === undefined) {
+            throw new common_1.BadRequestException(`Variant "${name}" is missing required field "priceMmk"`);
+        }
+        return {
+            id: this.toNumber(v.id),
+            name,
+            durationDays: durationDays,
+            priceMmk: priceMmk,
+            priceUsd: this.toNumber(v.priceUsd) ?? null,
+            badge: typeof v.badge === 'string' ? v.badge : undefined,
+            sortOrder: this.toNumber(v.sortOrder),
+            isActive: this.toBoolean(v.isActive),
+        };
+    }
+    normalizeFeature(raw, index) {
+        const f = (raw ?? {});
+        const name = typeof f.name === 'string' ? f.name : undefined;
+        if (!name) {
+            throw new common_1.BadRequestException(`Feature #${index + 1} is missing required field "name"`);
+        }
+        return {
+            name,
+            sortOrder: this.toNumber(f.sortOrder),
+        };
+    }
     async getDigitalProducts() {
         const products = await this.prisma.digitalProduct.findMany({
             where: { isActive: true },
@@ -38,22 +104,29 @@ let GamesService = class GamesService {
         return this.withStockFlags(product);
     }
     async storeDigitalProduct(dto, imagePath) {
-        const { variants, features, ...productData } = dto;
+        const { variants: rawVariants, features: rawFeatures, ...productData } = dto;
+        const variants = this.parseArrayInput(rawVariants).map((v, i) => this.normalizeVariant(v, i));
+        const features = this.parseArrayInput(rawFeatures).map((f, i) => this.normalizeFeature(f, i));
         const product = await this.prisma.digitalProduct.create({
             data: {
                 ...productData,
                 ...(imagePath ? { image: imagePath } : {}),
-                ...(variants?.length
+                ...(variants.length
                     ? {
                         variants: {
                             create: variants.map((v, i) => ({
-                                ...v,
+                                name: v.name,
+                                durationDays: v.durationDays,
+                                priceMmk: v.priceMmk,
+                                priceUsd: v.priceUsd ?? null,
+                                badge: v.badge ?? null,
                                 sortOrder: v.sortOrder ?? i,
+                                isActive: v.isActive ?? true,
                             })),
                         },
                     }
                     : {}),
-                ...(features?.length
+                ...(features.length
                     ? {
                         features: {
                             create: features.map((f, i) => ({
@@ -74,15 +147,17 @@ let GamesService = class GamesService {
         });
         if (!existing)
             throw new common_1.NotFoundException('Digital product not found');
-        const { variants, features, ...productData } = dto;
+        const { variants: rawVariants, features: rawFeatures, ...productData } = dto;
         const updateData = {
             ...productData,
             ...(imagePath ? { image: imagePath } : {}),
         };
-        if (variants) {
+        if (rawVariants !== undefined) {
+            const variants = this.parseArrayInput(rawVariants).map((v, i) => this.normalizeVariant(v, i));
             await this.syncVariants(id, variants);
         }
-        if (features) {
+        if (rawFeatures !== undefined) {
+            const features = this.parseArrayInput(rawFeatures).map((f, i) => this.normalizeFeature(f, i));
             await this.prisma.digitalProductFeature.deleteMany({
                 where: { digitalProductId: BigInt(id) },
             });
@@ -117,8 +192,8 @@ let GamesService = class GamesService {
                         name: v.name,
                         durationDays: v.durationDays,
                         priceMmk: v.priceMmk,
-                        priceUsd: v.priceUsd,
-                        badge: v.badge,
+                        priceUsd: v.priceUsd ?? null,
+                        badge: v.badge ?? null,
                         sortOrder: v.sortOrder ?? 0,
                         isActive: v.isActive ?? true,
                     },
@@ -131,8 +206,8 @@ let GamesService = class GamesService {
                         name: v.name,
                         durationDays: v.durationDays,
                         priceMmk: v.priceMmk,
-                        priceUsd: v.priceUsd,
-                        badge: v.badge,
+                        priceUsd: v.priceUsd ?? null,
+                        badge: v.badge ?? null,
                         sortOrder: v.sortOrder ?? 0,
                         isActive: v.isActive ?? true,
                     },
@@ -192,15 +267,17 @@ let GamesService = class GamesService {
         });
         if (!product)
             throw new common_1.NotFoundException('Digital product not found');
+        const v = this.normalizeVariant(dto, 0);
         return this.prisma.digitalProductVariant.create({
             data: {
                 digitalProductId: BigInt(productId),
-                name: dto.name,
-                durationDays: dto.durationDays,
-                priceMmk: dto.priceMmk,
-                priceUsd: dto.priceUsd,
-                badge: dto.badge,
-                sortOrder: dto.sortOrder ?? 0,
+                name: v.name,
+                durationDays: v.durationDays,
+                priceMmk: v.priceMmk,
+                priceUsd: v.priceUsd ?? null,
+                badge: v.badge ?? null,
+                sortOrder: v.sortOrder ?? 0,
+                isActive: v.isActive ?? true,
             },
         });
     }
@@ -210,16 +287,17 @@ let GamesService = class GamesService {
         });
         if (!variant)
             throw new common_1.NotFoundException('Variant not found');
+        const v = this.normalizeVariant(dto, 0);
         return this.prisma.digitalProductVariant.update({
             where: { id: BigInt(variantId) },
             data: {
-                name: dto.name,
-                durationDays: dto.durationDays,
-                priceMmk: dto.priceMmk,
-                priceUsd: dto.priceUsd,
-                badge: dto.badge,
-                sortOrder: dto.sortOrder,
-                isActive: dto.isActive,
+                name: v.name,
+                durationDays: v.durationDays,
+                priceMmk: v.priceMmk,
+                priceUsd: v.priceUsd ?? null,
+                badge: v.badge ?? null,
+                sortOrder: v.sortOrder ?? 0,
+                isActive: v.isActive ?? true,
             },
         });
     }
@@ -239,11 +317,12 @@ let GamesService = class GamesService {
         });
         if (!product)
             throw new common_1.NotFoundException('Digital product not found');
+        const f = this.normalizeFeature(dto, 0);
         return this.prisma.digitalProductFeature.create({
             data: {
                 digitalProductId: BigInt(productId),
-                name: dto.name,
-                sortOrder: dto.sortOrder ?? 0,
+                name: f.name,
+                sortOrder: f.sortOrder ?? 0,
             },
         });
     }

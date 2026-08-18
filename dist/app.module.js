@@ -20,6 +20,7 @@ const settings_module_1 = require("./settings/settings.module");
 const telegram_module_1 = require("./telegram/telegram.module");
 const admin_module_1 = require("./admin/admin.module");
 const digital_orders_module_1 = require("./digital-orders/digital-orders.module");
+const chat_module_1 = require("./chat/chat.module");
 const jwt_auth_guard_1 = require("./common/guards/jwt-auth.guard");
 let AppModule = class AppModule {
 };
@@ -40,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             telegram_module_1.TelegramModule,
             admin_module_1.AdminModule,
             digital_orders_module_1.DigitalOrdersModule,
+            chat_module_1.ChatModule,
         ],
         providers: [
             {

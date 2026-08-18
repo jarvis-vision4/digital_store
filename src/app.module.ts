@@ -11,6 +11,7 @@ import { SettingsModule } from './settings/settings.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { AdminModule } from './admin/admin.module';
 import { DigitalOrdersModule } from './digital-orders/digital-orders.module';
+import { ChatModule } from './chat/chat.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -28,6 +29,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     TelegramModule,
     AdminModule,
     DigitalOrdersModule,
+    ChatModule,
   ],
   providers: [
     {

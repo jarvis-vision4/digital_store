@@ -4,6 +4,11 @@ export declare class GamesService {
     private prisma;
     constructor(prisma: PrismaService);
     private productInclude;
+    private parseArrayInput;
+    private toNumber;
+    private toBoolean;
+    private normalizeVariant;
+    private normalizeFeature;
     getDigitalProducts(): Promise<any[]>;
     getDigitalProductById(id: string): Promise<any>;
     storeDigitalProduct(dto: CreateDigitalProductDto, imagePath?: string): Promise<any>;
@@ -52,10 +57,7 @@ export declare class GamesService {
         sortOrder: number;
         digitalProductId: bigint;
     }>;
-    addFeature(productId: string, dto: {
-        name: string;
-        sortOrder?: number;
-    }): Promise<{
+    addFeature(productId: string, dto: any): Promise<{
         id: bigint;
         createdAt: Date;
         name: string;

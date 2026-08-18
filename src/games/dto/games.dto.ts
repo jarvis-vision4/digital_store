@@ -1,12 +1,14 @@
-import { IsString, IsOptional, IsBoolean, IsNumber, Min, IsArray, ValidateNested } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
+import { IsString, IsOptional, IsBoolean, IsNumber, Min, IsArray } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 function ParseJsonArray() {
   return Transform(({ value }) => {
     if (value === undefined || value === null || Array.isArray(value)) return value;
     try {
-      return JSON.parse(value);
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed;
+      return value;
     } catch {
       return value;
     }
@@ -109,17 +111,13 @@ export class CreateDigitalProductDto {
 
   @ApiPropertyOptional({ type: [CreateVariantDto] })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateVariantDto)
   @ParseJsonArray()
   @IsOptional()
-  variants?: CreateVariantDto[];
+  variants?: any;
 
   @ApiPropertyOptional({ type: [CreateFeatureDto] })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateFeatureDto)
   @ParseJsonArray()
   @IsOptional()
-  features?: CreateFeatureDto[];
+  features?: any;
 }

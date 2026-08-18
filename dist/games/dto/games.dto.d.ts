@@ -21,6 +21,6 @@ export declare class CreateDigitalProductDto {
     rating?: number;
     badge?: string;
     isAvailable?: boolean;
-    variants?: CreateVariantDto[];
-    features?: CreateFeatureDto[];
+    variants?: any;
+    features?: any;
 }

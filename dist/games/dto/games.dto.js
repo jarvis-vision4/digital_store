@@ -19,7 +19,10 @@ function ParseJsonArray() {
         if (value === undefined || value === null || Array.isArray(value))
             return value;
         try {
-            return JSON.parse(value);
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed))
+                return parsed;
+            return value;
         }
         catch {
             return value;
@@ -119,7 +122,7 @@ class CreateDigitalProductDto {
     variants;
     features;
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, category: { required: false, type: () => String }, description: { required: false, type: () => String }, image: { required: false, type: () => String }, priceMmk: { required: true, type: () => Number, minimum: 0 }, rating: { required: false, type: () => Number, minimum: 0 }, badge: { required: false, type: () => String }, isAvailable: { required: false, type: () => Boolean }, variants: { required: false, type: () => [require("./games.dto").CreateVariantDto] }, features: { required: false, type: () => [require("./games.dto").CreateFeatureDto] } };
+        return { name: { required: true, type: () => String }, category: { required: false, type: () => String }, description: { required: false, type: () => String }, image: { required: false, type: () => String }, priceMmk: { required: true, type: () => Number, minimum: 0 }, rating: { required: false, type: () => Number, minimum: 0 }, badge: { required: false, type: () => String }, isAvailable: { required: false, type: () => Boolean }, variants: { required: false, type: () => Object }, features: { required: false, type: () => Object } };
     }
 }
 exports.CreateDigitalProductDto = CreateDigitalProductDto;
@@ -174,19 +177,15 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ type: [CreateVariantDto] }),
     (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => CreateVariantDto),
     ParseJsonArray(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Array)
+    __metadata("design:type", Object)
 ], CreateDigitalProductDto.prototype, "variants", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ type: [CreateFeatureDto] }),
     (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => CreateFeatureDto),
     ParseJsonArray(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Array)
+    __metadata("design:type", Object)
 ], CreateDigitalProductDto.prototype, "features", void 0);
 //# sourceMappingURL=games.dto.js.map
